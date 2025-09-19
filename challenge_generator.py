@@ -1,7 +1,7 @@
 import json
 import random
 
-def main():
+def generate_challenge():
     positions: list = list(range(1, 17))  # create positions from 1-16
     
     def get_items_list(items: list[str]):
@@ -34,9 +34,14 @@ def main():
         final_data = {
             "categories": categories
         }
+        return final_data
+
+
+def main():
+    final_data = generate_challenge()
         
-        with open("test.json", "w") as file:
-            json.dump(final_data, file, indent=2, ensure_ascii=False)
+    with open("test.json", "w") as file:
+        json.dump(final_data, file, indent=2, ensure_ascii=False)
 
 if __name__ == '__main__':
     main()
