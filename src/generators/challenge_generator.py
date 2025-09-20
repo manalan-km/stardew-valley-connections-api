@@ -1,6 +1,10 @@
 import json
 import random
 
+import os
+#TODO: put it in a constants file
+ROOT_DIR=os.path.abspath(os.curdir)
+
 def generate_challenge():
     positions: list = list(range(1, 17))  # create positions from 1-16
     
@@ -10,7 +14,6 @@ def generate_challenge():
         for item in items:
             position = random.choice(positions)
             positions.remove(position)
-            # Don't use json.dumps here - just create the dict
             items_list.append({"item": item, "position": position})
             
         return items_list
@@ -39,8 +42,7 @@ def generate_challenge():
 
 def main():
     final_data = generate_challenge()
-        
-    with open("test.json", "w") as file:
+    with open( ROOT_DIR + "/" + "test.json", "w") as file:
         json.dump(final_data, file, indent=2, ensure_ascii=False)
 
 if __name__ == '__main__':
