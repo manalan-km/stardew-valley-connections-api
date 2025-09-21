@@ -2,10 +2,18 @@ from datetime import date, timedelta
 from challenge_generator import generate_challenge
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 #TODO: put it in a constants file
 ROOT_DIR=os.path.abspath(os.curdir)
 
 def check_if_file_exists_in_root_dir(file_name):
+    
+    if os.environ['CHALLENGE_FILE_CHECK'] == '1':
+        return False
+    
     return os.path.isfile(ROOT_DIR + "/" + file_name)
 
 def generate_challenge_file( file_name):
