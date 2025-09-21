@@ -14,7 +14,7 @@ def generate_challenge():
         for item in items:
             position = random.choice(positions)
             positions.remove(position)
-            items_list.append({"item": item, "position": position})
+            items_list.append({"item": item, "position": position, "isGuessed": False})
             
         return items_list
     
