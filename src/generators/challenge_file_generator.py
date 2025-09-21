@@ -14,7 +14,7 @@ def check_if_file_exists_in_root_dir(file_name):
     if os.environ['CHALLENGE_FILE_CHECK'] == '1':
         return False
     
-    return os.path.isfile(ROOT_DIR + "/" + file_name)
+    return os.path.isfile(ROOT_DIR + "/challenges/" + file_name)
 
 def generate_challenge_file( file_name):
     if not check_if_file_exists_in_root_dir(file_name):
