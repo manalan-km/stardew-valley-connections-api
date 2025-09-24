@@ -2,12 +2,20 @@ from fastapi import FastAPI, HTTPException
 import datetime
 import os
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
 #TODO: put it in a constants file
 ROOT_DIR=os.path.abspath(os.curdir)
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins - only for development!
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/ping")
 def ping():
