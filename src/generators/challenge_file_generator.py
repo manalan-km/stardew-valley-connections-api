@@ -14,25 +14,40 @@ load_dotenv()
 
 #TODO: put it in a constants file
 ROOT_DIR=os.path.abspath(os.curdir)
-
+IDs = []
 def check_if_file_exists_in_root_dir(file_name):
-    
     if os.environ['CHALLENGE_FILE_CHECK'] == '1':
         return False
     
     return os.path.isfile(ROOT_DIR + "/challenges/" + file_name)
 
+def get_challenges_id_data():
+    global IDs
+    try:        
+        ids =  database_client.table("challenges").select("id").execute()
+        IDs = ids.data
+        return IDs 
+    except:  # noqa: E722
+        print("Error fetching the ID column from Challenges table")
+        raise
+        
+def get_id_for_challenge(date_to_check) -> int:
+    data = get_challenges_id_data()
+    
+    return  data[len(data) - 1]["id"] + 1 if len(data) !=0 else 1
+
 def write_to_database(json_content, current_date):
-    previous_challenge_id = database_client.table("challenges").select("id").execute()
-    data = previous_challenge_id.data     
-    challenge_id : int = 1
+    challenge_id = get_id_for_challenge(current_date)
     does_challenge_exist = False 
     
-    if len(data) != 0:
-        challenge_id = data[len(data) - 1]["id"] + 1
+    json_content["id"] = int(challenge_id)    
 
-        dates = database_client.table("challenges").select("date").execute().data
-        
+    if len(IDs) != 0:
+        try :
+            dates = database_client.table("challenges").select("date").execute().data
+        except:  # noqa: E722
+            print("Error fetching the Date column from Challenges Table")
+            raise
         
         for date in dates:
             if date["date"] == current_date:
@@ -41,11 +56,15 @@ def write_to_database(json_content, current_date):
     if does_challenge_exist:
         try:
             print("Updating record for ", current_date)
-            database_client.table("challenges").update({"challenge": json_content}).eq("date", current_date).execute()
+            response = database_client.table("challenges").update({"challenge": json_content}).eq("date", current_date).execute()
+            
+            json_content["id"] = response.data[0]["id"]
+            
             print("Updated for ", current_date)
             
         except:  # noqa: E722
             print("Error updating for challenge for: ", current_date)
+            raise
         
     else:
         try:    
@@ -59,21 +78,27 @@ def write_to_database(json_content, current_date):
             ).execute() 
             
         except:  # noqa: E722
-            print("Error inserting new value for Challenge:" ,current_date) 
-        
+            print("Error inserting new value for Challenge:" ,current_date)
+            raise 
+    return json_content  
 
 def generate_challenge_file( file_name : str):
-    if not check_if_file_exists_in_root_dir(file_name):
-        challenge_content = generate_challenge()
-        challenge_content_json = json.dumps(challenge_content)
+    try:
+        
+        if not check_if_file_exists_in_root_dir(file_name):
+                challenge_content = generate_challenge()
+                date = file_name.split(".")[0]
+            
+                challenge_content_json = write_to_database(challenge_content, date)
 
-       
-        with open( ROOT_DIR + "/" + "challenges/" + file_name, "w") as file:
-            json.dump(challenge_content, file, indent=2, ensure_ascii=False)
-        date = file_name.split(".")[0]
-        write_to_database(challenge_content_json,date)
-    else:
-        print(f"{file_name} already exists. Skipping this.")
+                with open( ROOT_DIR + "/" + "challenges/" + file_name, "w") as file:
+                    json.dump(challenge_content_json, file, indent=2, ensure_ascii=False)
+                
+        else:
+            print(f"{file_name} already exists. Skipping this.")   
+    except Exception as e:
+            print(f"Error while generating the challenge file {file_name}: " , e)
+            
 
 def main():
     today = date.today()
