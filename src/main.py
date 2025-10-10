@@ -25,7 +25,8 @@ def ping():
 @app.get("/challenge/{date}")
 def read_challenge(date: str):
     try:
-        datetime.datetime.strptime(date,"%d-%m-%Y").date()
+        datetime.datetime.strptime(date,"%Y-%d-%m").date()
+        
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date")
     
