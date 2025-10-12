@@ -31,13 +31,13 @@ def get_challenges_id_data():
         print("Error fetching the ID column from Challenges table")
         raise
         
-def get_id_for_challenge(date_to_check) -> int:
+def get_id_for_challenge()-> int:
     data = get_challenges_id_data()
     
     return  data[len(data) - 1]["id"] + 1 if len(data) !=0 else 1
 
 def write_to_database(json_content, current_date):
-    challenge_id = get_id_for_challenge(current_date)
+    challenge_id = get_id_for_challenge()
     does_challenge_exist = False 
     
     json_content["id"] = int(challenge_id)    
@@ -104,12 +104,12 @@ def main():
     today = date.today()
     tomorrow = today + timedelta(days=1)
     
-    today_challenge_filename = today.strftime("%Y-%d-%m")+ ".json"
-    tomorrow_challenge_filename = tomorrow.strftime("%Y-%d-%m") + ".json"
+    today_challenge_filename = today.strftime("%Y-%m-%d")+ ".json"
+    tomorrow_challenge_filename = tomorrow.strftime("%Y-%m-%d") + ".json"
     
-    print("Generating challenge for TODAY: " + today.strftime("%d-%m-%Y"))
+    print("Generating challenge for TODAY: " + today.strftime("%Y-%m-%d"))
     generate_challenge_file( today_challenge_filename )
-    print("Generating challenge for TOMORROW: " + tomorrow.strftime("%d-%m-%Y"))
+    print("Generating challenge for TOMORROW: " + tomorrow.strftime("%Y-%m-%d"))
     generate_challenge_file( tomorrow_challenge_filename )
 
 if __name__ == '__main__':
