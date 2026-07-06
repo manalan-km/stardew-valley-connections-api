@@ -14,8 +14,7 @@ FastAPI backend for [Stardew Valley Connections](https://github.com/manalan-km/s
 
 - Python 3 with FastAPI 0.116 + Uvicorn
 - Pydantic v2 for request/response models
-- Supabase Python client (database and auth)
-- Sentry SDK for error monitoring
+- Supabase Python client
 - python-dotenv for configuration
 
 ## Running locally
