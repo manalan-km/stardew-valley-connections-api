@@ -4,7 +4,9 @@ import random
 import os
 #TODO: put it in a constants file
 ROOT_DIR=os.path.abspath(os.curdir)
-
+print(ROOT_DIR)
+print(os.environ.get('DOCKER_ENVIRONMENT'))
+categories_path = 'categories.json' if os.environ.get('DOCKER_ENVIRONMENT') == None else '/app/categories.json'
 def generate_challenge():
     positions: list = list(range(1, 17))  # create positions from 1-16
     
@@ -18,7 +20,7 @@ def generate_challenge():
             
         return items_list
     
-    with open('categories.json', "r") as f:
+    with open( categories_path, "r") as f:
         file_content: dict = json.load(f)
         keys = list(file_content.keys())
         random_categories = random.sample(keys, 4)

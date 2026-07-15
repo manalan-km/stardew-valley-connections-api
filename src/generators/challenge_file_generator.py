@@ -90,8 +90,12 @@ def generate_challenge_file( file_name : str):
                 date = file_name.split(".")[0]
             
                 challenge_content_json = write_to_database(challenge_content, date)
+                
+                base_path = ROOT_DIR if os.environ.get('DOCKER_ENVIRONMENT') == None else '/app'
+                output_path = Path("/app/challenges/" + file_name)
+                output_path.parent.mkdir(parents=True, exist_ok=True)
 
-                with open( ROOT_DIR + "/" + "challenges/" + file_name, "w") as file:
+                with open(output_path , "w") as file:
                     json.dump(challenge_content_json, file, indent=2, ensure_ascii=False)
                 
         else:

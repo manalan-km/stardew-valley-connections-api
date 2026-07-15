@@ -1,0 +1,2 @@
+DOCKER_ENVIRONMENT=yes
+0 0 * * * /usr/local/bin/python /app/src/generators/challenge_file_generator.py >> /var/log/cron.log 2>&1
