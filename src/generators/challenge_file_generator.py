@@ -92,7 +92,7 @@ def generate_challenge_file( file_name : str):
                 challenge_content_json = write_to_database(challenge_content, date)
                 
                 base_path = ROOT_DIR if os.environ.get('DOCKER_ENVIRONMENT') == None else '/app'
-                output_path = Path("/app/challenges/" + file_name)
+                output_path = Path(base_path + "/challenges/" + file_name)
                 output_path.parent.mkdir(parents=True, exist_ok=True)
 
                 with open(output_path , "w") as file:
